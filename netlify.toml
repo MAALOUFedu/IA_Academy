@@ -1,0 +1,50 @@
+# =============================================================================
+# Netlify Configuration — ML Academy (Formation IA Machine Learning)
+# =============================================================================
+# Pour déployer sur Netlify, vous devez utiliser une base de données externe
+# (ex: Turso/libSQL, Supabase PostgreSQL) car SQLite ne fonctionne pas
+# dans les Netlify Functions (serverless).
+#
+# Option recommandée : Turso (SQLite compatible, gratuit)
+#   1. Créez un compte sur https://turso.tech
+#   2. Créez une base de données : turso db create ml-academy
+#   3. Obtenez l'URL : turso db show ml-academy --url
+#   4. Créez un token : turso db tokens create ml-academy
+#   5. Ajoutez les variables dans Netlify (Site settings > Environment variables) :
+#      DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
+#      DATABASE_AUTH_TOKEN = "votre-token"
+# =============================================================================
+
+[build]
+  command = "npx prisma generate && npx prisma db push --skip-generate && npx prisma db seed && npx next build"
+  publish = ".next"
+
+# Plugin Next.js de Netlify (support SSR + API Routes)
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Headers de sécurité
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Redirection pour la langue française
+[[redirects]]
+  from = "/en/*"
+  to = "/"
+  status = 301
+
+# Variables d'environnement (à configurer dans Netlify Dashboard)
+# [context.production.environment]
+#   DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
+#   DATABASE_AUTH_TOKEN = "votre-token-turso"
+#   CONTACT_EMAIL = "imadmaalouf02@gmail.com"
+#   ADMIN_PASSWORD = "votre-mot-de-passe-admin"
+#   NEXT_PUBLIC_APP_URL = "https://votre-site.netlify.app"
+
+# [context.deploy-preview.environment]
+#   DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
+#   DATABASE_AUTH_TOKEN = "votre-token-turso"

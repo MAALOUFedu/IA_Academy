@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TP {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  category    String     @default("Classification")
+  difficulty  String     @default("Intermediaire")
+  duration    String     @default("30 min")
+  color       String     @default("#6366f1")
+  colabUrl    String     @default("")
+  kaggleUrl   String     @default("")
+  datasetName String     @default("")
+  datasetRows String     @default("")
+  datasetCols String     @default("")
+  objective   String     @default("")
+  expectedResult String   @default("")
+  steps       String     @default("[]")
+  concepts    String     @default("[]")
+  tags        String     @default("[]")
+  order       Int        @default(0)
+  notebooks   Notebook[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Notebook {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  fileName    String
+  filePath    String
+  fileSize    Int      @default(0)
+  chapter     String   @default("")
+  visible     Boolean  @default(true)
+  tpId        String?
+  tp          TP?      @relation(fields: [tpId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CourseProgress {
+  id        String   @id @default(cuid())
+  sectionId String   @unique
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminSettings {
+  id              String   @id @default("default")
+  notifyEmail     String   @default("")
+  smtpHost        String   @default("")
+  smtpPort        Int      @default(587)
+  smtpUser        String   @default("")
+  smtpPass        String   @default("")
+  notifyOnCreate  Boolean  @default(true)
+  notifyOnUpdate  Boolean  @default(true)
+  notifyOnDelete  Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
+model CourseChapter {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  type        String   @default("chapter")
+  content     String   @default("")
+  order       Int      @default(0)
+  sectionId   String   @default("")
+  notebooks   CourseChapterNotebook[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CourseChapterNotebook {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  fileName    String
+  filePath    String
+  fileSize    Int      @default(0)
+  visible     Boolean  @default(true)
+  colabUrl    String   @default("")
+  chapterId   String?
+  chapter     CourseChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
