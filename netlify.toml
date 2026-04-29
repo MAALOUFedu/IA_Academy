@@ -1,18 +1,27 @@
 # =============================================================================
 # Netlify Configuration — ML Academy (Formation IA Machine Learning)
 # =============================================================================
-# Pour déployer sur Netlify, vous devez utiliser une base de données externe
-# (ex: Turso/libSQL, Supabase PostgreSQL) car SQLite ne fonctionne pas
-# dans les Netlify Functions (serverless).
-#
-# Option recommandée : Turso (SQLite compatible, gratuit)
-#   1. Créez un compte sur https://turso.tech
-#   2. Créez une base de données : turso db create ml-academy
-#   3. Obtenez l'URL : turso db show ml-academy --url
-#   4. Créez un token : turso db tokens create ml-academy
-#   5. Ajoutez les variables dans Netlify (Site settings > Environment variables) :
-#      DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
-#      DATABASE_AUTH_TOKEN = "votre-token"
+# Base de données Turso (SQLite compatible + cloud)
+# 
+# SETUP TURSO:
+#   1. Installez Turso CLI: https://docs.turso.tech/
+#   2. Créez un compte: turso auth signup
+#   3. Créez la base: turso db create ml-academy
+#   4. Obtenez l'URL: turso db show ml-academy --url
+#   5. Créez un token: turso db tokens create ml-academy
+#   6. Configurez dans Netlify Dashboard:
+#      - Site settings > Build & deploy > Environment
+#      - DATABASE_URL = "libsql://ml-academy-[user].turso.io"
+#      - DATABASE_AUTH_TOKEN = "[votre-token]"
+# =============================================================================
+
+# Variables d'environnement requises
+# [context.production.environment]
+#   DATABASE_URL = "libsql://ml-academy-[user].turso.io"
+#   DATABASE_AUTH_TOKEN = "[token]"
+#   CONTACT_EMAIL = "imadmaalouf02@gmail.com"
+#   ADMIN_PASSWORD = "[votre-mot-de-passe]"
+#   NEXT_PUBLIC_APP_URL = "https://your-site.netlify.app"
 # =============================================================================
 
 [build]
@@ -37,14 +46,4 @@
   to = "/"
   status = 301
 
-# Variables d'environnement (à configurer dans Netlify Dashboard)
-# [context.production.environment]
-#   DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
-#   DATABASE_AUTH_TOKEN = "votre-token-turso"
-#   CONTACT_EMAIL = "imadmaalouf02@gmail.com"
-#   ADMIN_PASSWORD = "votre-mot-de-passe-admin"
-#   NEXT_PUBLIC_APP_URL = "https://votre-site.netlify.app"
 
-# [context.deploy-preview.environment]
-#   DATABASE_URL = "libsql://ml-academy-votreuser.turso.io"
-#   DATABASE_AUTH_TOKEN = "votre-token-turso"
